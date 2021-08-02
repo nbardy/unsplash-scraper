@@ -1,17 +1,19 @@
 const Apify = require('apify')
 
+let collection = "demo"
 
 const getURLs = async () => {
 	try {
 		const input = await Apify.getInput()
-		const query = input.query.replace(/\s+/g, '-')
-		let url = `https://unsplash.com/napi/search/photos?query=${query}&per_page=30`
+		const keyword = input.keyword.replace(/\s+/g, '-').trim().toLowerCase()
+		collection = keyword
+		console.log(keyword)
+		let url = `https://unsplash.com/napi/search/photos?query=${keyword}&per_page=30`
 		if(input.color) url += `&color=${input.color}`
 		
 		const response = await Apify.utils.requestAsBrowser({url})
 		const body = JSON.parse(response.body)
 		const totalPages = body.total_pages
-		console.log(`Total: ${totalPages}`)
 		let urls = []
 		for(let page = 1; page <= totalPages; page++) {
 			urls.push({url: `${url}&page=${page}`})
@@ -31,7 +33,7 @@ Apify.main(async () => {
 		const crawler = new Apify.BasicCrawler({
 			requestList,
 			handleRequestFunction: async ({ request }) => {
-				console.log(`Processing ${request.url}...`)
+				// console.log(`Processing ${request.url}...`)
 				const response = await Apify.utils.requestAsBrowser(request)
 				const body = JSON.parse(response.body)
 				body.results.forEach(image => {
@@ -40,7 +42,7 @@ Apify.main(async () => {
 			}
 		})
 		await crawler.run()
-		await store.setValue('demo', results )
+		await store.setValue(collection, results )
 	} catch(error) {
 		console.error(error)
 	} finally {
