@@ -7,7 +7,6 @@ const getURLs = async () => {
 		const input = await Apify.getInput()
 		const keyword = input.keyword.replace(/\s+/g, '-').trim().toLowerCase()
 		collection = keyword
-		console.log(keyword)
 		let url = `https://unsplash.com/napi/search/photos?query=${keyword}&per_page=30`
 		if(input.color) url += `&color=${input.color}`
 		
@@ -33,7 +32,6 @@ Apify.main(async () => {
 		const crawler = new Apify.BasicCrawler({
 			requestList,
 			handleRequestFunction: async ({ request }) => {
-				// console.log(`Processing ${request.url}...`)
 				const response = await Apify.utils.requestAsBrowser(request)
 				const body = JSON.parse(response.body)
 				body.results.forEach(image => {
@@ -46,8 +44,8 @@ Apify.main(async () => {
 	} catch(error) {
 		console.error(error)
 	} finally {
-		const used = process.memoryUsage().heapUsed / 1024 / 1024
-		console.info('\x1b[32m', `Memory: ${used.toFixed(2)} MB`)
+		// const used = process.memoryUsage().heapUsed / 1024 / 1024
+		// console.info('\x1b[32m', `Memory: ${used.toFixed(2)} MB`)
 		results = null
 	}
 })
