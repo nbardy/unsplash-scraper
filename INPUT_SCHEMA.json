@@ -30,5 +30,5 @@
             "enumTitles": ["Any color", "Black & White", "White", "Black", "Yellow", "Orange", "Red", "Purple", "Magenta", "Green", "Teal", "Blue"]
         }
     },
-    "required": []
+    "required": ["keyword"]
 }
