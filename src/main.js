@@ -8,8 +8,8 @@ Apify.main(async () => {
         const { keyword, orientation, color } = await Apify.getInput();
         const query = keyword.trim().toLowerCase().replace(/\s+/g, '-'); // Need to Fix: Normalize query
         let url = `https://unsplash.com/napi/search/photos?query=${query}&per_page=30`;
-        if(orientation !== 'any') url += `&orientation=${orientation}`;
-        if(color !== 'any') url += `&color=${color}`;
+        if (orientation !== 'any') url += `&orientation=${orientation}`;
+        if (color !== 'any') url += `&color=${color}`;
 
         // Generate List
         const getRequestList = async () => {
@@ -17,7 +17,7 @@ Apify.main(async () => {
                 log.info('Generating Requests List...');
                 const response = await requestAsBrowser({ url });
                 const body = JSON.parse(response.body);
-                if(body.errors) throw body.errors;
+                if (body.errors) throw body.errors;
                 const totalPages = body.total_pages;
                 const urls = [];
                 for (let page = 1; page <= totalPages; page++) {
@@ -26,7 +26,7 @@ Apify.main(async () => {
                 log.info(`Generated ${urls.length} URLs.`);
                 return urls;
             } catch (error) {
-                throw `getRequestList: ${error}`;
+                throw new Error(`getRequestList: ${error}`); // Need to Fix Errors handling
             }
         };
 
