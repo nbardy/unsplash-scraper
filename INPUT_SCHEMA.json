@@ -1,0 +1,33 @@
+{
+    "title": "Unsplash search",
+    "type": "object",
+    "schemaVersion": 1,
+    "properties": {
+        "keyword": {
+            "title": "Keyword",
+            "type": "string",
+            "description": "",
+            "editor": "textfield",
+            "example": "Nature"
+        },
+        "orientation": {
+            "title": "Orientation",
+            "type": "string",
+            "description": "",
+            "editor": "select",
+            "default": "any",
+            "enum": ["any", "landscape", "portrait", "square"],
+            "enumTitles": ["Any orientation", "Landscape", "Portrait", "Square"]
+        },
+        "color": {
+            "title": "Color",
+            "type": "string",
+            "description": "",
+            "editor": "select",
+            "default": "any",
+            "enum": ["any", "black_and_white", "white", "black", "yellow", "orange", "red", "purple", "magenta", "green", "teal", "blue"],
+            "enumTitles": ["Any color", "Black & White", "White", "Black", "Yellow", "Orange", "Red", "Purple", "Magenta", "Green", "Teal", "Blue"]
+        }
+    },
+    "required": []
+}

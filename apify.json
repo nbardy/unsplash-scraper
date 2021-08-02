@@ -1,0 +1,7 @@
+{
+	"name": "unsplash-scraper",
+	"version": "0.1.0",
+	"buildTag": "latest",
+	"env": null,
+	"template": "project_empty"
+}
