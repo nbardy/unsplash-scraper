@@ -5,6 +5,8 @@ FROM apify/actor-node:16
 
 # Second, copy just package.json and package-lock.json since it should be
 # the only file that affects "npm install" in the next step, to speed up the build
+RUN mkdir -p /home/app
+WORKDIR /home/app
 COPY package*.json ./
 
 # Install NPM packages, skip optional and development dependencies to

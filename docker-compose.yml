@@ -1,0 +1,15 @@
+version: '3.9'
+
+services:
+    # Unsplash Scraper
+    unsplash-scraper:
+        container_name: unsplash-scraper
+        build:
+            context: ./
+            dockerfile: Dockerfile
+        image: unsplash-scraper:0.1.1
+        volumes:
+            - ./:/home/app
+            - /home/app/node_modules
+        working_dir: /home/app
+        command: tail -F anything

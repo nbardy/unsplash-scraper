@@ -7,6 +7,7 @@
             "title": "Keyword",
             "type": "string",
             "description": "",
+            "default": "Prague",
             "editor": "textfield",
             "example": "Nature"
         },
