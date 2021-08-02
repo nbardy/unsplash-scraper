@@ -8,8 +8,7 @@ const getURLs = async () => {
 		const keyword = input.keyword.replace(/\s+/g, '-').trim().toLowerCase()
 		collection = keyword
 		let url = `https://unsplash.com/napi/search/photos?query=${keyword}&per_page=30`
-		if(input.color) url += `&color=${input.color}`
-		
+		if(input.color) url += `&color=${input.color}`		
 		const response = await Apify.utils.requestAsBrowser({url})
 		const body = JSON.parse(response.body)
 		const totalPages = body.total_pages
@@ -32,6 +31,7 @@ Apify.main(async () => {
 		const crawler = new Apify.BasicCrawler({
 			requestList,
 			handleRequestFunction: async ({ request }) => {
+				console.log(`Request: ${request.url}`)
 				const response = await Apify.utils.requestAsBrowser(request)
 				const body = JSON.parse(response.body)
 				body.results.forEach(image => {
