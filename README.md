@@ -1,2 +1,2 @@
 # Unsplash Scraper
-Apify actor that crawls Unsplash photos. Scrape photos by keyword, color & orientation.
+[Apify](https://apify.com/) actor that crawls Unsplash photos. Scrape photos by keyword, color & orientation.
