@@ -6,6 +6,16 @@
   "dockerfile": "./Dockerfile",
   "readme": "./ACTOR.md",
   "storages": {
-    "dataset": "./dataset_schema.json",
+      "dataset": {
+          "actorSpecification": 1,
+          "fields": {},
+          "views": {
+              "overview": {
+                  "title": "Overview",
+                  "transformation": {},
+                  "display": {}
+              }
+          }
+      }
   }
 }
