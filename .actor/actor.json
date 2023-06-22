@@ -4,17 +4,5 @@
   "version": "0.2",
   "buildTag": "latest",
   "dockerfile": "./Dockerfile",
-  "readme": "./ACTOR.md",
-  "storages": {
-      "dataset": "my-dataset-name",
-      "views": {
-          "overview": {
-              "title": "Overview",
-              "transformation": {},
-              "display": {
-                  "component": "YourComponentName" // specify appropriate component name here
-              }
-          }
-      }
-  }
+  "readme": "./ACTOR.md"
 }
