@@ -3,8 +3,8 @@
     "type": "object",
     "schemaVersion": 1,
     "properties": {
-        "keyword": {
-            "title": "Keywords",
+        "keywords": {
+            "title": "Keywords (; separated)",
             "type": "string",
             "description": "",
             "default": "Prague",
@@ -30,5 +30,5 @@
             "enumTitles": ["Any color", "Black & White", "White", "Black", "Yellow", "Orange", "Red", "Purple", "Magenta", "Green", "Teal", "Blue"]
         }
     },
-    "required": ["keyword"]
+    "required": ["keywords"]
 }
