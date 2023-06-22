@@ -6,7 +6,7 @@ Apify.main(async () => {
     log.info('Starting Scraper...');
     try {
         const { keywords, orientation, color } = await Apify.getInput();
-        const keywordList = keywords.split(',').map(kw => kw.trim().toLowerCase().replace(/\s+/g, '-')); // Normalize queries
+        const keywordList = keywords.split(';').map(kw => kw.trim().toLowerCase().replace(/\s+/g, '-')); // Normalize queries
 
         for (const query of keywordList) {
             let url = `https://unsplash.com/napi/search/photos?query=${query}&per_page=30`;
