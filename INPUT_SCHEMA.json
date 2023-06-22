@@ -4,7 +4,7 @@
     "schemaVersion": 1,
     "properties": {
         "keyword": {
-            "title": "Keyword",
+            "title": "Keywords",
             "type": "string",
             "description": "",
             "default": "Prague",
