@@ -57,4 +57,3 @@ Apify.main(async () => {
     }
 });
 
-await Actor.exit();
