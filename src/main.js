@@ -2,7 +2,6 @@ const Apify = require('apify');
 
 const { log, requestAsBrowser } = Apify.utils;
 
-await Actor.init()
 
 Apify.main(async () => {
     log.info('Starting Scraper...');
