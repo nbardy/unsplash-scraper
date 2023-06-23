@@ -1,4 +1,5 @@
 const Apify = require('apify');
+import { Actor } from 'apify';
 const { log, requestAsBrowser } = Apify.utils;
 
 Apify.main(async () => {
@@ -43,7 +44,7 @@ Apify.main(async () => {
                 const query = request.userData.query;
                 
                 body = JSON.parse(body);
-                body.results.forEach((photo) => Apify.Actor.pushData({imageUrl: photo, query: query}));                
+                body.results.forEach((photo) => Actor.pushData({imageUrl: photo, query: query}));                
             },
         });
 
