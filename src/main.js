@@ -24,7 +24,7 @@ Apify.main(async () => {
                     if (body.errors) throw body.errors;
                     const totalPages = body.total_pages;
                     for (let page = 1; page <= totalPages; page++) {
-                        await requestQueue.addRequest({ url: `${url}&page=${page}` });
+                        await requestQueue.addRequest({ url: `${url}&page=${page}`, userData: {query});
                     }
                     log.info(`Generated ${totalPages} URLs.`);
                 } catch (error) {
@@ -35,26 +35,20 @@ Apify.main(async () => {
             await addToQueue();
         }
 
-        // Crawl the URLs
-        const photos = [];
         const crawler = new Apify.BasicCrawler({
             requestQueue,
             handleRequestFunction: async ({ request }) => {
                 log.info(`Processing: ${request.url}`);
                 let { body } = await requestAsBrowser(request);
+                const query = request.userData.query;
+                
                 body = JSON.parse(body);
-                body.results.forEach((photo) => photos.push(photo));
+                body.results.forEach((photo) => Actor.pushData({imageUrl: photo, query: query}));                
             },
         });
 
         await crawler.run();
 
-        // Save photos
-        const store = await Apify.openKeyValueStore('unsplash');
-        for (const query of keywordList) {
-            await store.setValue(`${query}__${color}__${orientation}`, photos);
-            log.info(`${photos.length} photos processed for keyword: ${query}`);
-        }
     } catch (error) {
         log.error(error);
     }
