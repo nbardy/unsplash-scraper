@@ -24,7 +24,7 @@ Apify.main(async () => {
                     if (body.errors) throw body.errors;
                     const totalPages = body.total_pages;
                     for (let page = 1; page <= totalPages; page++) {
-                        await requestQueue.addRequest({ url: `${url}&page=${page}`, userData: {query});
+                        await requestQueue.addRequest({ url: `${url}&page=${page}`, userData: {query}});
                     }
                     log.info(`Generated ${totalPages} URLs.`);
                 } catch (error) {
