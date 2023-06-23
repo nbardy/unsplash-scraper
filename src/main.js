@@ -1,5 +1,6 @@
 const Apify = require('apify');
-import { Actor } from 'apify';
+import { Actor } = require('apify');
+
 const { log, requestAsBrowser } = Apify.utils;
 
 Apify.main(async () => {
