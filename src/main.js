@@ -1,7 +1,9 @@
-const Apify = require('apify');
-const { Actor } = require('apify');
+import Apify, { Actor } from 'apify';
+
 
 const { log, requestAsBrowser } = Apify.utils;
+
+await Actor.init()
 
 Apify.main(async () => {
     log.info('Starting Scraper...');
@@ -45,6 +47,7 @@ Apify.main(async () => {
                 const query = request.userData.query;
                 
                 body = JSON.parse(body);
+
                 body.results.forEach((photo) => Actor.pushData({imageUrl: photo, query: query}));                
             },
         });
@@ -55,3 +58,5 @@ Apify.main(async () => {
         log.error(error);
     }
 });
+
+await Actor.exit();
