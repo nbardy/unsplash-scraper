@@ -1,7 +1,7 @@
 const Apify = require('apify');
 
 const { log, requestAsBrowser } = Apify.utils;
-
+const LAST_PROCESSED_INDEX_KEY = `LAST_PROCESSED_INDEX_${Apify.getEnv().actorRunId}`; // Uses the run ID in the key name
 
 Apify.main(async () => {
     log.info('Starting Scraper...');
@@ -9,10 +9,18 @@ Apify.main(async () => {
         const { keywords, orientation, color } = await Apify.getInput();
         const keywordList = keywords.split(';').map(kw => kw.trim().toLowerCase().replace(/\s+/g, '-')); // Normalize queries
 
+        // Retrieve the last processed keyword index from the default key-value store
+        let lastProcessedIndex = await Apify.getValue(LAST_PROCESSED_INDEX_KEY);
+        if (!lastProcessedIndex) {
+            lastProcessedIndex = 0;
+        }
+
         // Create a RequestQueue
         const requestQueue = await Apify.openRequestQueue();
 
-        for (const query of keywordList) {
+        for (let i = lastProcessedIndex; i < keywordList.length; i++) {
+            const query = keywordList[i];
+
             let url = `https://unsplash.com/napi/search/photos?query=${query}&per_page=30`;
             if (orientation !== 'any') url += `&orientation=${orientation}`;
             if (color !== 'any') url += `&color=${color}`;
@@ -35,6 +43,9 @@ Apify.main(async () => {
             };
 
             await addToQueue();
+
+            // Store the index of the last processed keyword in the default key-value store
+            await Apify.setValue(LAST_PROCESSED_INDEX_KEY, i + 1);
         }
 
         const crawler = new Apify.BasicCrawler({
@@ -56,4 +67,3 @@ Apify.main(async () => {
         log.error(error);
     }
 });
-
