@@ -14,12 +14,14 @@ Apify.main(async () => {
         if (!lastProcessedIndex) {
             lastProcessedIndex = 0;
         }
+        log.info("lastProcessIndex: ", lastProcessedIndex)
 
         // Create a RequestQueue
         const requestQueue = await Apify.openRequestQueue();
 
         for (let i = lastProcessedIndex; i < keywordList.length; i++) {
             const query = keywordList[i];
+            log.info("Processin query: ", query)
 
             let url = `https://unsplash.com/napi/search/photos?query=${query}&per_page=30`;
             if (orientation !== 'any') url += `&orientation=${orientation}`;
