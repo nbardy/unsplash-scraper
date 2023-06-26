@@ -6,7 +6,7 @@ const LAST_PROCESSED_INDEX_KEY = `LAST_PROCESSED_INDEX_${Apify.getEnv().actorRun
 Apify.main(async () => {
     log.info('Starting Scraper...');
     try {
-        const { keywords, orientation, color } = await Apify.getInput();
+        const { keywords, orientation, color, resumeRequestQueueId } = await Apify.getInput();
         const keywordList = keywords.split(';').map(kw => kw.trim().toLowerCase().replace(/\s+/g, '-')); // Normalize queries
 
         // Retrieve the last processed keyword index from the default key-value store
@@ -17,7 +17,7 @@ Apify.main(async () => {
         log.info("lastProcessIndex: ", lastProcessedIndex)
 
         // Create a RequestQueue
-        const requestQueue = await Apify.openRequestQueue();
+        const requestQueue = await Apify.openRequestQueue(resumeRequestQueueId);
 
         for (let i = lastProcessedIndex; i < keywordList.length; i++) {
             const query = keywordList[i];
