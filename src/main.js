@@ -72,11 +72,10 @@ Apify.main(async () => {
                     // Push all items in a single call
                     await Apify.pushData(itemsToPush);
                 } else {
-                    log.info(`No results found in body for URL: ${request.url}`);
+                    log.info(`No results found in body for URL: ${request.url}`, body);
                 }
         
-                // Push all items in a single call
-                await Apify.pushData(itemsToPush);            
+        
             },
         });
 
