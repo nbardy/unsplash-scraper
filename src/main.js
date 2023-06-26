@@ -37,6 +37,8 @@ Apify.main(async () => {
                         log.info('Adding to Queue...');
                         const response = await requestAsBrowser({ url });
                         const body = JSON.parse(response.body);
+                        body = JSON.parse(body);
+                        
                         if (body.errors) throw body.errors;
                         const totalPages = body.total_pages;
                         for (let page = 1; page <= totalPages; page++) {
