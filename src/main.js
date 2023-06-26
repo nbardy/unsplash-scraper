@@ -72,7 +72,7 @@ Apify.main(async () => {
                     // Push all items in a single call
                     await Apify.pushData(itemsToPush);
 
-                    log.info(`Found {itemsToPush.length} items`)
+                    log.info(`Found ${itemsToPush.length} items`)
                 } else {
                     log.warn(`No results found in body for URL: ${request.url}`, body);
                 }
