@@ -74,7 +74,7 @@ Apify.main(async () => {
 
                     log.info(`Found ${itemsToPush.length} items`)
                 } else {
-                    log.warn(`No results found in body for URL: ${request.url}`, body);
+                    log.warning(`No results found in body for URL: ${request.url}`, body);
                 }
         
         
