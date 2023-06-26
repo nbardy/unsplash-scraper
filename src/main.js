@@ -57,9 +57,11 @@ Apify.main(async () => {
                 let { body } = await requestAsBrowser(request);
                 const query = request.userData.query;
                 
-                body = JSON.parse(body);
-
-                body.results.forEach((photo) => Apify.pushData({imageUrl: photo, query: query}));                
+                // Create an array to hold all items to be pushed
+                const itemsToPush = body.results.map((photo) => ({ imageUrl: photo, query: query }));
+        
+                // Push all items in a single call
+                await Apify.pushData(itemsToPush);            
             },
         });
 
