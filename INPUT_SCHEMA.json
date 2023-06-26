@@ -34,7 +34,7 @@
             "type": "string",
             "description": "",
             "editor": "textfield"
-        },
+        }
     },
     "required": ["keywords"]
 }
