@@ -62,6 +62,7 @@ Apify.main(async () => {
             handleRequestFunction: async ({ request }) => {
                 log.info(`Processing: ${request.url}`);
                 let { body } = await requestAsBrowser(request);
+                body = JSON.parse(body);
                 const query = request.userData.query;
 
                 // Check if body.results exists before mapping over it
@@ -75,9 +76,7 @@ Apify.main(async () => {
                     log.info(`Found ${itemsToPush.length} items`)
                 } else {
                     log.warning(`No results found in body for URL: ${request.url}`, body);
-                }
-        
-        
+                }      
             },
         });
 
