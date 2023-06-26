@@ -28,7 +28,13 @@
             "default": "any",
             "enum": ["any", "black_and_white", "white", "black", "yellow", "orange", "red", "purple", "magenta", "green", "teal", "blue"],
             "enumTitles": ["Any color", "Black & White", "White", "Black", "Yellow", "Orange", "Red", "Purple", "Magenta", "Green", "Teal", "Blue"]
-        }
+        },
+        "resumeRequestQueueId": {
+            "title": "Request Queue ID",
+            "type": "string",
+            "description": "",
+            "editor": "textfield"
+        },
     },
     "required": ["keywords"]
 }
