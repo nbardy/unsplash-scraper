@@ -63,9 +63,17 @@ Apify.main(async () => {
                 log.info(`Processing: ${request.url}`);
                 let { body } = await requestAsBrowser(request);
                 const query = request.userData.query;
-                
-                // Create an array to hold all items to be pushed
-                const itemsToPush = body.results.map((photo) => ({ imageUrl: photo, query: query }));
+
+                // Check if body.results exists before mapping over it
+                if (body.results) {
+                    // Create an array to hold all items to be pushed
+                    const itemsToPush = body.results.map((photo) => ({ imageUrl: photo, query: query }));
+        
+                    // Push all items in a single call
+                    await Apify.pushData(itemsToPush);
+                } else {
+                    log.info(`No results found in body for URL: ${request.url}`);
+                }
         
                 // Push all items in a single call
                 await Apify.pushData(itemsToPush);            
