@@ -15,39 +15,44 @@ Apify.main(async () => {
             lastProcessedIndex = 0;
         }
         log.info("lastProcessIndex: ", lastProcessedIndex)
-
-        // Create a RequestQueue
-        const requestQueue = await Apify.openRequestQueue(resumeRequestQueueId);
-
-        for (let i = lastProcessedIndex; i < keywordList.length; i++) {
-            const query = keywordList[i];
-            log.info("Processin query: ", query)
-
-            let url = `https://unsplash.com/napi/search/photos?query=${query}&per_page=30`;
-            if (orientation !== 'any') url += `&orientation=${orientation}`;
-            if (color !== 'any') url += `&color=${color}`;
-
-            // Generate Queue
-            const addToQueue = async () => {
-                try {
-                    log.info('Adding to Queue...');
-                    const response = await requestAsBrowser({ url });
-                    const body = JSON.parse(response.body);
-                    if (body.errors) throw body.errors;
-                    const totalPages = body.total_pages;
-                    for (let page = 1; page <= totalPages; page++) {
-                        await requestQueue.addRequest({ url: `${url}&page=${page}`, userData: {query}});
+        let requestQueue;
+        
+        if(resumeRequestQueueId != null) {         
+            // Resume
+            requestQueue = await Apify.openRequestQueue(resumeRequestQueueId);
+        } else {
+            requestQueue = await Apify.openRequestQueue();
+            // Loading keywords
+            for (let i = lastProcessedIndex; i < keywordList.length; i++) {
+                const query = keywordList[i];
+                log.info("Processin query: ", query)
+    
+                let url = `https://unsplash.com/napi/search/photos?query=${query}&per_page=30`;
+                if (orientation !== 'any') url += `&orientation=${orientation}`;
+                if (color !== 'any') url += `&color=${color}`;
+    
+                // Generate Queue
+                const addToQueue = async () => {
+                    try {
+                        log.info('Adding to Queue...');
+                        const response = await requestAsBrowser({ url });
+                        const body = JSON.parse(response.body);
+                        if (body.errors) throw body.errors;
+                        const totalPages = body.total_pages;
+                        for (let page = 1; page <= totalPages; page++) {
+                            await requestQueue.addRequest({ url: `${url}&page=${page}`, userData: {query}});
+                        }
+                        log.info(`Generated ${totalPages} URLs.`);
+                    } catch (error) {
+                        throw new Error(`addToQueue: ${error}`);
                     }
-                    log.info(`Generated ${totalPages} URLs.`);
-                } catch (error) {
-                    throw new Error(`addToQueue: ${error}`);
-                }
-            };
-
-            await addToQueue();
-
-            // Store the index of the last processed keyword in the default key-value store
-            await Apify.setValue(LAST_PROCESSED_INDEX_KEY, i + 1);
+                };
+    
+                await addToQueue();
+    
+                // Store the index of the last processed keyword in the default key-value store
+                await Apify.setValue(LAST_PROCESSED_INDEX_KEY, i + 1);
+            }
         }
 
         const crawler = new Apify.BasicCrawler({
