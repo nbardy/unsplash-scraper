@@ -3,6 +3,9 @@ const Apify = require('apify');
 const { log, requestAsBrowser } = Apify.utils;
 const LAST_PROCESSED_INDEX_KEY = `LAST_PROCESSED_INDEX_${Apify.getEnv().actorRunId}`; // Uses the run ID in the key name
 
+const proxyConfiguration = await Actor.createProxyConfiguration();
+const proxyUrl = proxyConfiguration.newUrl();
+
 Apify.main(async () => {
     log.info('Starting Scraper...');
     try {
@@ -35,7 +38,7 @@ Apify.main(async () => {
                 const addToQueue = async () => {
                     try {
                         log.info('Adding to Queue...');
-                        const response = await requestAsBrowser({ url });
+                        const response = await requestAsBrowser({ url, proxyUrl });
                         const body = JSON.parse(response.body);
                         
                         if (body.errors) throw body.errors;
