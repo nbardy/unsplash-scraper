@@ -7,7 +7,7 @@ const LAST_PROCESSED_INDEX_KEY = `LAST_PROCESSED_INDEX_${Apify.getEnv().actorRun
 
 
 Apify.main(async () => {
-    const proxyConfiguration = await Actor.createProxyConfiguration();
+    const proxyConfiguration = await Apify.createProxyConfiguration();
     log.info('Starting Scraper...');
     try {
         const { keywords, orientation, color, resumeRequestQueueId } = await Apify.getInput();
