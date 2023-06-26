@@ -39,7 +39,7 @@ Apify.main(async () => {
                 const addToQueue = async () => {
                     try {
                         log.info('Adding to Queue...');
-                        const response = await requestAsBrowser({ url, proxyUrl });
+                        const response = await requestAsBrowser({ url });
                         const body = JSON.parse(response.body);
 
                         const proxyUrl = proxyConfiguration.newUrl();
@@ -66,7 +66,9 @@ Apify.main(async () => {
             requestQueue,
             handleRequestFunction: async ({ request }) => {
                 log.info(`Processing: ${request.url}`);
-                let { body } = await requestAsBrowser(request);
+                const proxyUrl = proxyConfiguration.newUrl();
+                
+                let { body } = await requestAsBrowser({...request, proxyUrl});
                 body = JSON.parse(body);
                 const query = request.userData.query;
 
