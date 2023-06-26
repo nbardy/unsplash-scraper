@@ -3,10 +3,11 @@ const Apify = require('apify');
 const { log, requestAsBrowser } = Apify.utils;
 const LAST_PROCESSED_INDEX_KEY = `LAST_PROCESSED_INDEX_${Apify.getEnv().actorRunId}`; // Uses the run ID in the key name
 
-const proxyConfiguration = await Actor.createProxyConfiguration();
+
 
 
 Apify.main(async () => {
+    const proxyConfiguration = await Actor.createProxyConfiguration();
     log.info('Starting Scraper...');
     try {
         const { keywords, orientation, color, resumeRequestQueueId } = await Apify.getInput();
