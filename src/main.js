@@ -1,55 +1,50 @@
-const Apify = require('apify');
+import { Actor, BasicCrawler } from 'apify';
+import { ApifyStorageLocal } from '@apify/storage-local';
 
-const { log, requestAsBrowser } = Apify.utils;
-const LAST_PROCESSED_INDEX_KEY = `LAST_PROCESSED_INDEX_${Apify.getEnv().actorRunId}`; // Uses the run ID in the key name
+const LAST_PROCESSED_INDEX_KEY = `LAST_PROCESSED_INDEX_${Actor.getEnv().actorRunId}`; // Uses the run ID in the key name
 
-
-
-
-Apify.main(async () => {
-    const proxyConfiguration = await Apify.createProxyConfiguration();
-    log.info('Starting Scraper...');
+Actor.main(async () => {
+    const proxyConfiguration = await Actor.createProxyConfiguration();
+    console.info('Starting Scraper...');
     try {
-        const { keywords, orientation, color, resumeRequestQueueId } = await Apify.getInput();
+        const { keywords, orientation, color, resumeRequestQueueId } = await Actor.getInput();
         const keywordList = keywords.split(';').map(kw => kw.trim().toLowerCase().replace(/\s+/g, '-')); // Normalize queries
 
         // Retrieve the last processed keyword index from the default key-value store
-        let lastProcessedIndex = await Apify.getValue(LAST_PROCESSED_INDEX_KEY);
+        let lastProcessedIndex = await Actor.getValue(LAST_PROCESSED_INDEX_KEY);
         if (!lastProcessedIndex) {
             lastProcessedIndex = 0;
         }
-        log.info("lastProcessIndex: ", lastProcessedIndex)
+        console.info("lastProcessIndex: ", lastProcessedIndex)
         let requestQueue;
         
         if(resumeRequestQueueId != null) {         
             // Resume
-            requestQueue = await Apify.openRequestQueue(resumeRequestQueueId);
+            requestQueue = await Actor.openRequestQueue(resumeRequestQueueId);
         } else {
-            requestQueue = await Apify.openRequestQueue();
+            requestQueue = await Actor.openRequestQueue();
             // Loading keywords
             for (let i = lastProcessedIndex; i < keywordList.length; i++) {
                 const query = keywordList[i];
-                log.info("Processin query: ", query)
+                console.info("Processin query: ", query)
     
                 let url = `https://unsplash.com/napi/search/photos?query=${query}&per_page=30`;
                 if (orientation !== 'any') url += `&orientation=${orientation}`;
                 if (color !== 'any') url += `&color=${color}`;
     
                 // Generate Queue
-                const addToQueue = async () => {
+                const addToQueue = async ({ sendRequest }) => {
                     try {
-                        log.info('Adding to Queue...');
-                        const response = await requestAsBrowser({ url });
-                        const body = JSON.parse(response.body);
-
+                        console.info('Adding to Queue...');
+                        const res = await sendRequest({ url, responseType: 'json' });
                         const proxyUrl = proxyConfiguration.newUrl();
                         
-                        if (body.errors) throw body.errors;
-                        const totalPages = body.total_pages;
+                        if (res.body.errors) throw res.body.errors;
+                        const totalPages = res.body.total_pages;
                         for (let page = 1; page <= totalPages; page++) {
                             await requestQueue.addRequest({ url: `${url}&page=${page}`, userData: {query}});
                         }
-                        log.info(`Generated ${totalPages} URLs.`);
+                        console.info(`Generated ${totalPages} URLs.`);
                     } catch (error) {
                         throw new Error(`addToQueue: ${error}`);
                     }
@@ -58,31 +53,30 @@ Apify.main(async () => {
                 await addToQueue();
     
                 // Store the index of the last processed keyword in the default key-value store
-                await Apify.setValue(LAST_PROCESSED_INDEX_KEY, i + 1);
+                await Actor.setValue(LAST_PROCESSED_INDEX_KEY, i + 1);
             }
         }
 
-        const crawler = new Apify.BasicCrawler({
+        const crawler = new BasicCrawler({
             requestQueue,
-            handleRequestFunction: async ({ request }) => {
+            async requestHandler({ sendRequest, request, log }) {
                 log.info(`Processing: ${request.url}`);
                 const proxyUrl = proxyConfiguration.newUrl();
                 
-                let { body } = await requestAsBrowser({...request, proxyUrl});
-                body = JSON.parse(body);
+                const res = await sendRequest({ url: request.url, responseType: 'json' });
                 const query = request.userData.query;
 
-                // Check if body.results exists before mapping over it
-                if (body.results) {
+                // Check if res.body.results exists before mapping over it
+                if (res.body.results) {
                     // Create an array to hold all items to be pushed
-                    const itemsToPush = body.results.map((photo) => ({ imageUrl: photo, query: query }));
+                    const itemsToPush = res.body.results.map((photo) => ({ imageUrl: photo, query: query }));
         
                     // Push all items in a single call
-                    await Apify.pushData(itemsToPush);
+                    await Actor.pushData(itemsToPush);
 
                     log.info(`Found ${itemsToPush.length} items`)
                 } else {
-                    log.warning(`No results found in body for URL: ${request.url}`, body);
+                    log.warning(`No results found in body for URL: ${request.url}`, res.body);
                 }      
             },
         });
@@ -90,6 +84,6 @@ Apify.main(async () => {
         await crawler.run();
 
     } catch (error) {
-        log.error(error);
+        console.error(error);
     }
 });
