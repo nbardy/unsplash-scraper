@@ -1,4 +1,6 @@
-import { Actor, BasicCrawler } from 'apify';
+import apifyPackage from 'apify';
+const { Actor, BasicCrawler } = apifyPackage;
+
 import { ApifyStorageLocal } from '@apify/storage-local';
 
 const LAST_PROCESSED_INDEX_KEY = `LAST_PROCESSED_INDEX_${Actor.getEnv().actorRunId}`; // Uses the run ID in the key name
