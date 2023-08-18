@@ -59,11 +59,12 @@ Actor.main(async () => {
 
         const crawler = new BasicCrawler({
             requestQueue,
+            proxyConfiguration,
             async requestHandler({ sendRequest, request, log }) {
                 try {
                     
                     log.info(`Processing: ${request.url}`);
-                    const proxyUrl = proxyConfiguration.newUrl();
+                    // const proxyUrl = proxyConfiguration.newUrl();
                     
                     const res = await sendRequest({ url: request.url, responseType: 'json' });
                     const query = request.userData.query;
