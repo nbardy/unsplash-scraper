@@ -1,5 +1,5 @@
-import apifyPackage from 'apify';
-const { Actor, BasicCrawler } = apifyPackage;
+
+import { Actor, BasicCrawler } from "apify
 
 import { ApifyStorageLocal } from '@apify/storage-local';
 
