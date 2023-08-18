@@ -60,24 +60,27 @@ Actor.main(async () => {
         const crawler = new BasicCrawler({
             requestQueue,
             async requestHandler({ sendRequest, request, log }) {
-                log.info(`Processing: ${request.url}`);
-                const proxyUrl = proxyConfiguration.newUrl();
-                
-                const res = await sendRequest({ url: request.url, responseType: 'json' });
-                const query = request.userData.query;
-
-                // Check if res.body.results exists before mapping over it
-                if (res.body.results) {
-                    // Create an array to hold all items to be pushed
-                    const itemsToPush = res.body.results.map((photo) => ({ imageUrl: photo, query: query }));
-        
-                    // Push all items in a single call
-                    await Actor.pushData(itemsToPush);
-
-                    log.info(`Found ${itemsToPush.length} items`)
-                } else {
-                    log.warning(`No results found in body for URL: ${request.url}`, res.body);
-                }      
+                try {
+                    
+                    log.info(`Processing: ${request.url}`);
+                    const proxyUrl = proxyConfiguration.newUrl();
+                    
+                    const res = await sendRequest({ url: request.url, responseType: 'json' });
+                    const query = request.userData.query;
+    
+                    // Check if res.body.results exists before mapping over it
+                    if (res.body.results) {
+                        // Create an array to hold all items to be pushed
+                        const itemsToPush = res.body.results.map((photo) => ({ imageUrl: photo, query: query }));
+            
+                        // Push all items in a single call
+                        await Actor.pushData(itemsToPush);
+    
+                        log.info(`Found ${itemsToPush.length} items`)
+                    } else {
+                        log.warning(`No results found in body for URL: ${request.url}`, res.body);
+                    }      
+                }
             },
         });
 
