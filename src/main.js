@@ -1,6 +1,6 @@
 
 import { Actor } from "apify";
-import { BasicCrawler } from 'crawlee';
+import { HttpCrawler } from 'crawlee';
 import { ApifyStorageLocal } from '@apify/storage-local';
 
 
@@ -60,7 +60,7 @@ Actor.main(async () => {
             }
         }
 
-        const crawler = new BasicCrawler({
+        const crawler = new HttpCrawler({
             requestQueue,
             proxyConfiguration,
             async requestHandler({ sendRequest, request, log }) {
