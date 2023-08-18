@@ -1,5 +1,5 @@
 
-import { Actor, BasicCrawler } from "apify
+import { Actor, BasicCrawler } from "apify";
 
 import { ApifyStorageLocal } from '@apify/storage-local';
 
