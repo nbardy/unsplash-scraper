@@ -80,6 +80,8 @@ Actor.main(async () => {
                     } else {
                         log.warning(`No results found in body for URL: ${request.url}`, res.body);
                     }      
+                }  catch (error) {
+                    log.warning(`Failed to process URL: ${request.url}`, error);
                 }
             },
         });
