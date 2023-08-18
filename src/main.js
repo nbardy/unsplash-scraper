@@ -3,10 +3,11 @@ const { Actor, BasicCrawler } = apifyPackage;
 
 import { ApifyStorageLocal } from '@apify/storage-local';
 
-const LAST_PROCESSED_INDEX_KEY = `LAST_PROCESSED_INDEX_${Actor.getEnv().actorRunId}`; // Uses the run ID in the key name
 
 Actor.main(async () => {
     const proxyConfiguration = await Actor.createProxyConfiguration();
+    const LAST_PROCESSED_INDEX_KEY = `LAST_PROCESSED_INDEX_${Actor.getEnv().actorRunId}`; // Uses the run ID in the key name
+
     console.info('Starting Scraper...');
     try {
         const { keywords, orientation, color, resumeRequestQueueId } = await Actor.getInput();
